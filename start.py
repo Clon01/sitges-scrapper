@@ -6,3 +6,5 @@ if __name__ == '__main__':
     exclusion = "urts|Brigadoon|Espai|Serial|SGAE|Petit|ort"
     movies = scrp.get_movies_by_section(exclusion)
 
+for m in movies:
+    print("Movie: {} - {}".format(m.title, m.duration))

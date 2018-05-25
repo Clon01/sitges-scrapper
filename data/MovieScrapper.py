@@ -17,7 +17,10 @@ class MovieScrapper:
         :param node: A soup object positioned in the movie root
         :return: str: The movie title
         """
-        return node.h3.a.text.trim()
+        try:
+            return node.h3.a.text
+        except (TypeError, KeyError, AttributeError):
+            return None
 
     def get_director(self, node):
         """
@@ -25,7 +28,10 @@ class MovieScrapper:
         :param node: A soup object positioned in the movie root
         :return: str: The movie director
         """
-        return node.h6.text.trim()
+        try:
+            return node.h6.text
+        except (TypeError, KeyError, AttributeError):
+            return None
 
     def get_section(self, node) -> str:
         """
@@ -34,7 +40,10 @@ class MovieScrapper:
         :param node: A soup object positioned in the movie root
         :return: str: The movie section
         """
-        return node.p.text.trim()
+        try:
+            return node.p.text
+        except (TypeError, KeyError, AttributeError):
+            return None
 
     def get_link(self, node) -> str:
         """
@@ -43,7 +52,10 @@ class MovieScrapper:
         :param node: A soup object positioned in the movie root
         :return: str: The movie section
         """
-        return node.h3.a
+        try:
+            return node.h3.a["href"]
+        except (TypeError, KeyError, AttributeError):
+            return None
 
     def get_movie_soup(self, link):
         """
@@ -51,7 +63,10 @@ class MovieScrapper:
         :param link: str: Link to the movie sub page
         :return: A soup object containing the full sub page
         """
-        return BeautifulSoup(requests.get(link), "html.parser")
+        if link:
+            return BeautifulSoup(requests.get(link).text, "html.parser")
+        else:
+            return None
 
     def get_synopse(self, soup):
         """
@@ -59,7 +74,13 @@ class MovieScrapper:
         :param soup: A soup object containing the movie page
         :return: str: The movie synopse
         """
-        return soup.find("div", {"class": "section_sinopsi"}).p.text.trim()
+        if soup:
+            try:
+                return soup.find("div", {"class": "section_sinopsi"}).p.text
+            except (TypeError, KeyError, AttributeError):
+                return None
+        else:
+            return None
 
     def get_duration(self, soup):
         """
@@ -67,7 +88,13 @@ class MovieScrapper:
         :param soup: A soup object containing the movie page
         :return: str: The movie duration
         """
-        return soup.find("div", {"class": "section_fitxa_artistica"}).p.strong.text.trim()
+        if soup:
+            try:
+                return soup.find("div", {"class": "section_fitxa_artistica"}).p.strong.text
+            except (TypeError, KeyError, AttributeError):
+                return None
+        else:
+            return None
 
     def get_movie(self, node):
         """
