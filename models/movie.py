@@ -16,35 +16,35 @@ class Movie:
         elif len(kwargs) > 0 and kwargs.get("title"):
             self.title = kwargs.get("title")
         else:
-            self. title = ""
+            self. title = "No title"
 
         if synopse:
             self.synopse = synopse
         elif len(kwargs) > 0 and kwargs.get("synopse"):
             self.synopse = kwargs.get("synopse")
         else:
-            self. synopse = ""
+            self. synopse = "Empty"
 
         if duration:
             self.duration = duration
         elif len(kwargs) > 0 and kwargs.get("duration"):
             self.duration = kwargs.get("duration")
         else:
-            self. duration = ""
+            self. duration = "(XX min)"
 
         if section:
             self.section = section
         elif len(kwargs) > 0 and kwargs.get("section"):
             self.section = kwargs.get("section")
         else:
-            self.section = ""
+            self.section = "No section"
 
         if director:
             self.director = director
         elif len(kwargs) > 0 and kwargs.get("director"):
             self.director = kwargs.get("director")
         else:
-            self.director = ""
+            self.director = "Director"
 
     def __dict__(self):
         """Returns a dictionary object from the properties"""
