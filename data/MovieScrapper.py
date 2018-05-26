@@ -113,8 +113,8 @@ class MovieScrapper:
         :param exclusion: str: Regular expression. All movies with a section matching this string will not be returned
         :return: A collection of Movie objects
         """
-        re.match(exclusion, self.get_section(node))
-        
+        return re.search(exclusion, self.get_section(node))
+
     def slice_soup_by_movies(self):
         """
         Returns a list with all movie nodes
