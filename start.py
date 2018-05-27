@@ -1,17 +1,18 @@
 # import pandas
 from data.MovieScrapper import MovieScrapper
 from data.MovieExport import MovieExport
+from data.Settings import Settings
 
 if __name__ == '__main__':
-    url = "http://www.sitgesfilmfestival.com/cat/programa/pel_licules"
-    scrap = MovieScrapper(url)
-    exclusion = "urts|Brigadoon|Espai|Serial|SGAE|Petit|ort|Cocoon"
-
-    # df = pandas.DataFrame(m.__dict__() for m in scrap.get_movies_by_section(exclusion))
-    # df.sort_values(by=["title"], inplace=True)
-    # print(df.to_html(columns=["title", "director", "section", "synopse", "duration"]))
-
+    #Load settings.json file with the app settings
+    my = Settings(__file__)
+    #Create a new MovieScrapper using the URL from settings
+    scrap = MovieScrapper(my.settings["URL"])
+    #Create a new MovieExport object
     me = MovieExport()
-    for m in scrap.get_movies_by_section(exclusion):
+    #Loop all the movies from the MovieScrapper, excluding banned sections in the settings file
+    for m in scrap.get_movies_by_section(my.banned_sections()):
+        #Add each movie to the export html
         me.add_movie(m)
-    me.save_to_file("C:\\temp\\sitges.html")
+    #Save export html to the file from settings
+    me.save_to_file(my.settings["ExportFile"])
