@@ -1,0 +1,14 @@
+{
+  "URL" : "http://www.sitgesfilmfestival.com/cat/programa/pel_licules",
+  "ExportFile" : "C:\\temp\\sitges.html",
+  "BannedSections" : [
+    "urts",
+    "Brigadoon",
+    "Espai",
+    "Serial",
+    "SGAE",
+    "Petit",
+    "ort",
+    "Cocoon"
+  ]
+}
