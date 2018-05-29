@@ -1,14 +1,15 @@
 {
-  "URL" : "http://www.sitgesfilmfestival.com/cat/programa/pel_licules",
-  "ExportFile" : "C:\\temp\\sitges.html",
-  "BannedSections" : [
-    "urts",
-    "Brigadoon",
-    "Espai",
-    "Serial",
-    "SGAE",
-    "Petit",
-    "ort",
-    "Cocoon"
-  ]
+    "BannedSections": [
+        "urts",
+        "Brigadoon",
+        "Espai",
+        "Serial",
+        "SGAE",
+        "Petit",
+        "ort",
+        "Cocoon"
+    ],
+    "ExportFile": "C:\\temp\\sitges.html",
+    "Hash": "01a7f4a3a687cd9cef6fdf7362a21302aead89afdd96d41464580abdd756be6b",
+    "URL": "http://www.sitgesfilmfestival.com/cat/programa/pel_licules"
 }

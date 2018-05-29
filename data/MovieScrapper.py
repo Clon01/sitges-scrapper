@@ -1,7 +1,8 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from models.movie import Movie
+from models.Movie import Movie
+import hashlib
 
 
 class MovieScrapper:
@@ -71,13 +72,12 @@ class MovieScrapper:
             return ""
 
     @staticmethod
-    def get_movie_soup(link) -> [str]:
+    def get_movie_soup(link) -> [BeautifulSoup]:
         """
         Returns a BeautifulSoup object for the movie sub page
         :param link: str: Link to the movie sub page
         :return: A soup object containing the full sub page
         """
-        #  TODO Add hash check to see if website changed since the last scrap
         #  if the link is something
         if link:
             # Request the URL and parse the text into a soup object
@@ -165,3 +165,21 @@ class MovieScrapper:
             if not self.is_movie_in_section(node, exclusion):
                 # When not banned, return node
                 yield self.get_movie(node)
+
+    def get_hash(self):
+        """
+        Generates a sha256 hash from the retrieved website
+        :return: An hexadecimal digest string.
+        """
+        # Create a sha256 hasher object
+        hasher = hashlib.sha256()
+        # Extract only the div containing the movie list
+        # This has to be done because of dynamic javascript in other parts of the html
+        # will return a different hash even if the user readable content has not changed
+        div = self.soup.find("div", {"class": "Grid"})
+        # Extract a valid string for encoding
+        text = div.__str__().encode("utf-8")
+        # pass the string to the hasher and return the hash
+        hasher.update(text)
+        return hasher.hexdigest()
+

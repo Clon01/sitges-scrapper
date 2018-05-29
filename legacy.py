@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup as BS
 from urllib.request import urlopen
 import pandas
 import codecs
-from hashlib import md5
+
 
 
 class Movie():
