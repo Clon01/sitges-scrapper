@@ -18,7 +18,7 @@ if __name__ == '__main__':
             me.add_movie(m)
         # Save export html to the file from settings
         me.save_to_file(my.settings["ExportFile"])
-        #Save new hash in setting.json
+        # Save new hash in setting.json
         my.save_settings()
     else:
         print("The content didn't change since the last export")
