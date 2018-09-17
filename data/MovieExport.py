@@ -19,8 +19,8 @@ class MovieExport:
         r = t.tr
         # Write title and director on the first row
         # Also define 20/80% ratio for 2 cells
-        r.td(movie.title, width="20%")
-        r.td(movie.director)
+        r.td(movie.director, width="20%")
+        r.td(movie.title)
         # Add a secod row
         r2 = t.tr
         # Write section and duration on the second row

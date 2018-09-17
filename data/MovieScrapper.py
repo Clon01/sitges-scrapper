@@ -176,7 +176,7 @@ class MovieScrapper:
         # Extract only the div containing the movie list
         # This has to be done because of dynamic javascript in other parts of the html
         # will return a different hash even if the user readable content has not changed
-        div = self.soup.find("div", {"class": "Grid"})
+        div = self.soup.find("div", {"class": "Gridv2"})
         # Extract a valid string for encoding
         text = div.__str__().encode("utf-8")
         # pass the string to the hasher and return the hash
