@@ -8,10 +8,10 @@ import hashlib
 class MovieScrapper:
     """Returns movies from the website"""
 
-    def __init__(self, url: str):
+    def __init__(self, url: str, params=None):
         """Creates a movie scrapper object"""
         # Stores a soup object for the main website
-        self.soup = self.get_movie_soup(url)
+        self.soup = self.get_movie_soup(url, params)
 
     @staticmethod
     def get_title(node) -> [str]:
@@ -72,16 +72,18 @@ class MovieScrapper:
             return ""
 
     @staticmethod
-    def get_movie_soup(link) -> [BeautifulSoup]:
+    def get_movie_soup(link, params=None) -> [BeautifulSoup]:
         """
         Returns a BeautifulSoup object for the movie sub page
         :param link: str: Link to the movie sub page
+        :param params: Parameters to pass to the URL
+        :type params: Dict or None
         :return: A soup object containing the full sub page
         """
         #  if the link is something
         if link:
             # Request the URL and parse the text into a soup object
-            return BeautifulSoup(requests.get(link).text, "html.parser")
+            return BeautifulSoup(requests.get(link, params=params).text, "html.parser")
         else:
             # If the link is empty return None
             return None

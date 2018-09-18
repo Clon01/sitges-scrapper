@@ -7,7 +7,7 @@ if __name__ == '__main__':
     # Load settings.json file with the app settings
     my = Settings(__file__)
     # Create a new CalendarScrapper using the URL from settings
-    scrap = CalendarScrapper(my.settings["URL"])
+    scrap = CalendarScrapper(my.settings["URL"], my.settings.get("Params"))
     # Check if the content of the page has changed
     if not my.check_hash(scrap.get_hash()):
         # Create a CalendarExport object

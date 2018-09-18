@@ -11,6 +11,9 @@
         "No"
     ],
     "ExportFile": "C:\\temp\\sitges.html",
-    "Hash": "09c6b1e4f32e4716a4831a8d03c73145de39a17cac1d1038c2c8723ca75a51f1",
+    "Hash": "1f8b61a25073102ef65fea6191c77e78a4fa3db3f6e3067e6da3e534d409d6bc",
+    "Params": {
+        "filmsperpage": "9999"
+    },
     "URL": "http://www.sitgesfilmfestival.com/cat/programa/pel_licules"
 }

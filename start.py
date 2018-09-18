@@ -7,7 +7,7 @@ if __name__ == '__main__':
     # Load settings.json file with the app settings
     my = Settings(__file__)
     # Create a new MovieScrapper using the URL from settings
-    scrap = MovieScrapper(my.settings["URL"])
+    scrap = MovieScrapper(my.settings["URL"], my.settings.get("Params"))
     # Check if the content of the page has changed
     if not my.check_hash(scrap.get_hash()):
         # Create a new MovieExport object

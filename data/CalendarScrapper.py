@@ -8,10 +8,10 @@ from datetime import datetime, timedelta
 class CalendarScrapper:
     """Returns sessions from the website"""
 
-    def __init__(self, url: str):
+    def __init__(self, url: str, params=None):
         """Creates a calendar scrapper object"""
         # Stores a soup object for the main website
-        self.soup = BeautifulSoup(requests.get(url).text, "html.parser")
+        self.soup = BeautifulSoup(requests.get(url, params=params).text, "html.parser")
 
     @staticmethod
     def get_name(node) -> [str]:
