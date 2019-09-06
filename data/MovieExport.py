@@ -6,6 +6,7 @@ class MovieExport:
     def __init__(self):
         # Create a new empty html object
         self.output = HTML('html')
+        self.count = 0
 
     def add_movie(self, movie):
         """
@@ -33,6 +34,8 @@ class MovieExport:
         r3.td(movie.synopse)
         # Add a line break after the table
         self.output.body.br()
+        # Add 1 to the movie counter
+        self.count += 1
         # This function returns nothing
         return None
 
@@ -46,3 +49,11 @@ class MovieExport:
         with open(filename, 'w+', encoding='utf-8') as outfile:
             # write the content of the html output to the file
             outfile.write(self.output.__str__())
+
+    # def count(self):
+    #     """
+    #     Counts the number of movies
+    #     :return: Number of movies in this instance
+    #     :rtype: int
+    #     """
+    #     return self.counter

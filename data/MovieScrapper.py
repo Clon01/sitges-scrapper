@@ -114,8 +114,13 @@ class MovieScrapper:
         """
         if soup:
             try:
-                #  Looks up the duration
-                return soup.find("div", {"class": "section_fitxa_artistica"}).p.strong.text
+                #  Gets al paragraphs in the technical sheet
+                strings = soup.find("div", {"class": "section_fitxa_artistica"}).find_all("p")
+                # The fist paragraph contains duration
+                # The second coutry and year
+                # Concatenate and return both
+                return "{} / {}".format(strings[1].text, strings[0].text)
+
             except (TypeError, KeyError, AttributeError):
                 #  If the key does not exists return this default
                 return None

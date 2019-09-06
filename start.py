@@ -18,6 +18,8 @@ if __name__ == '__main__':
             me.add_movie(m)
         # Save export html to the file from settings
         me.save_to_file(my.settings["ExportFile"])
+        # Print movie total
+        print("Total movie count: {}".format(me.count))
         # Save new hash in setting.json
         my.save_settings()
     else:
