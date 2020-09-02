@@ -89,15 +89,15 @@ class MovieScrapper:
             return None
 
     @staticmethod
-    def get_synopse(soup) -> [str]:
+    def get_synopsis(soup) -> [str]:
         """
-        Returns the synopse from the movie page in the BeautifulSoup node
+        Returns the synopsis from the movie page in the BeautifulSoup node
         :param soup: A soup object containing the movie page
-        :return: str: The movie synopse
+        :return: str: The movie synopsis
         """
         if soup:
             try:
-                #  Looks up the synopse
+                #  Looks up the synopsis
                 return soup.find("div", {"class": "section_sinopsi"}).p.text
             except (TypeError, KeyError, AttributeError):
                 #  If the key does not exists return this default
@@ -117,11 +117,11 @@ class MovieScrapper:
                 #  Gets al paragraphs in the technical sheet
                 strings = soup.find("div", {"class": "section_fitxa_artistica"}).find_all("p")
                 # The fist paragraph contains duration
-                # The second coutry and year
+                # The second country and year
                 # Concatenate and return both
                 return "{} / {}".format(strings[1].text, strings[0].text)
 
-            except (TypeError, KeyError, AttributeError):
+            except (TypeError, KeyError, AttributeError, IndexError):
                 #  If the key does not exists return this default
                 return None
         else:
@@ -134,11 +134,11 @@ class MovieScrapper:
         :return: The Movie object
         """
         # Get the link for the movie and generate a soup for this movie subpage
-        # This is required because synopse and duration are obtained from the subpage
+        # This is required because synopsis and duration are obtained from the subpage
         subpage = self.get_movie_soup(self.get_link(node))
         # Create a Movie object and return it on the fly getting each argument from it's own method
         return Movie(title=self.get_title(node), director=self.get_director(node), section=self.get_section(node),
-                     synopse=self.get_synopse(subpage), duration=self.get_duration(subpage))
+                     synopse=self.get_synopsis(subpage), duration=self.get_duration(subpage))
 
     def is_movie_in_section(self, node, exclusion: str) -> [str]:
         """
@@ -189,4 +189,3 @@ class MovieScrapper:
         # pass the string to the hasher and return the hash
         hasher.update(text)
         return hasher.hexdigest()
-
