@@ -121,7 +121,7 @@ class MovieScrapper:
                 # Concatenate and return both
                 return "{} / {}".format(strings[1].text, strings[0].text)
 
-            except (TypeError, KeyError, AttributeError):
+            except (TypeError, KeyError, AttributeError, IndexError):
                 #  If the key does not exists return this default
                 return None
         else:

@@ -1,17 +1,19 @@
 {
     "BannedSections": [
-        "urts",
+        "urt",
         "Brigadoon",
         "Espai",
         "Serial",
         "SGAE",
         "Petit",
+        "Small",
         "ort",
         "Cocoon",
+        "Especial",
         "No section"
     ],
     "ExportFile": "C:\\temp\\sitges.html",
-    "Hash": "c104813b4b32698790aaa9242b65a6e52198a1648aedbdc61c2d1dff2c982622",
+    "Hash": "72b8f1f7ce3ef08977bd1daa5edcbbb01c266cc9475edcd99cd872697bcf3867",
     "Params": {
         "filmsperpage": "9999"
     },
