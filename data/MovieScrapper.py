@@ -1,8 +1,9 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from models.Movie import Movie
 import hashlib
+import concurrent.futures
+from models.Movie import Movie
 
 
 class MovieScrapper:
@@ -166,12 +167,13 @@ class MovieScrapper:
         :param exclusion: str: Regular expression. All movies with a section matching this string will not be returned
         :return: A generator of Movie objects
         """
-        # For each node in all movies
-        for node in self.slice_soup_by_movies():
-            # Check if movie section is banned
-            if not self.is_movie_in_section(node, exclusion):
-                # When not banned, return node
-                yield self.get_movie(node)
+        # Build a list with all movies except banned sections
+        nodes = [node for node in self.slice_soup_by_movies() if not self.is_movie_in_section(node, exclusion)]
+        # Create concurrent threads to run requests while waiting for the next response
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            # Yield avery returned movie
+            for movie in executor.map(self.get_movie, nodes):
+                yield movie
 
     def get_hash(self):
         """
