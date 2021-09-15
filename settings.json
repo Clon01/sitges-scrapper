@@ -13,7 +13,17 @@
         "No section"
     ],
     "ExportFile": "C:\\temp\\sitges.html",
-    "Hash": "38c63028aee8424f8f3022a8c7ce27f2dcdae93215982bbfb4ec4a000f9bab32",
+    "Exports": [
+        {
+            "Filename": "C:\\temp\\sitges.html",
+            "Format": "HTML"
+        },
+        {
+            "Filename": "C:\\temp\\sitges.csv",
+            "Format": "CSV"
+        }
+    ],
+    "Hash": "8f049916805dcc52782613955956802885959a6dde35b79cefc503de7232cb87",
     "Params": {
         "filmsperpage": "9999"
     },
