@@ -10,12 +10,14 @@
         "ort",
         "Cocoon",
         "Especial",
+        "Nova autoria",
+        "Family",
         "No section"
     ],
     "ExportFile": "C:\\temp\\sitges.html",
-    "Hash": "38c63028aee8424f8f3022a8c7ce27f2dcdae93215982bbfb4ec4a000f9bab32",
+    "Hash": "b666a06306ff40b7a6b3cdad6e77fdf15a160ebaf4ddfd206f0bf4cc8cc8a2ca",
     "Params": {
         "filmsperpage": "9999"
     },
-    "URL": "http://www.sitgesfilmfestival.com/cat/programa/pel_licules"
+    "URL": "https://sitgesfilmfestival.com/ca/service/films/2023"
 }

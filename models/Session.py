@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 class Session:
     """Data model for movie objects"""
-    def __init__(self, name=None, begin=None, duration=None, location=None, **kwargs):
+    def __init__(self, name=None, begin=None, duration=None, location=None, description=None, **kwargs):
         """
         Creates a new session object
         :param name: Name of the movie (Optional)
@@ -62,3 +62,8 @@ class Session:
         else:
             # If no argument and no kwargs assign default value
             self. location = "Nowhere"
+
+        if description:
+            self.description = description
+        else:
+            self.description = self.name

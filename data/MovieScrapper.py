@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import hashlib
 import concurrent.futures
 from models.Movie import Movie
+from html2text import html2text
 
 
 class MovieScrapper:
@@ -11,8 +12,33 @@ class MovieScrapper:
 
     def __init__(self, url: str, params=None):
         """Creates a movie scrapper object"""
-        # Stores a soup object for the main website
-        self.soup = self.get_movie_soup(url, params)
+        self.SEPARATOR = ", "
+        self.movies = list()
+        self.directors = dict()
+        self.sections = dict()
+        self.countries = dict()
+        self.prepare_data(url, params)
+
+    def parse_directors(self, raw_data):
+        self.directors = {i["id"]: {"id": i["id"], "name": i["name"]["ca"]} for i in raw_data.get("directors")}
+
+    def parse_sections(self, raw_data):
+        self.sections = {i["id"]: {"id": i["id"], "name": i["name"]["ca"]} for i in raw_data.get("sections")}
+
+    def parse_countries(self, raw_data):
+        self.countries = {i["id"]: {"id": i["id"], "name": i["name"]["ca"]} for i in raw_data.get("countries")}
+
+    def prepare_data(self, url, params):
+        raw_data = dict()
+        response = requests.get(url, params)
+        if response.status_code == 200:
+            raw_data = response.json()
+            self.movies = raw_data.get("films")
+            self.parse_directors(raw_data)
+            self.parse_sections(raw_data)
+            self.parse_countries(raw_data)
+
+
 
     @staticmethod
     def get_title(node) -> [str]:
@@ -23,27 +49,28 @@ class MovieScrapper:
         """
         try:
             # Looks up the title
-            return node.h3.a.text
+            return node.get("title").get("ca")
         except (TypeError, KeyError, AttributeError):
             # If the key does not exists return this default
             return None
 
-    @staticmethod
-    def get_director(node) -> [str]:
+    def get_director(self, node) -> [str]:
         """
         Returns the director from the currently selected movie in the BeautifulSoup node
         :param node: A soup object positioned in the movie root
         :return: str: The movie director
         """
         try:
+            directors = list()
             #  Looks up the director
-            return node.h6.text
+            for director_id in node.get("directors"):
+                directors.append(self.directors.get(director_id).get("name"))
+            return self.SEPARATOR.join(directors)
         except (TypeError, KeyError, AttributeError):
             #  If the key does not exists return this default
             return None
 
-    @staticmethod
-    def get_section(node) -> [str]:
+    def get_section(self, node) -> [str]:
         """
         Returns the section from the currently selected movie in the BeautifulSoup node
         :rtype: str
@@ -51,8 +78,12 @@ class MovieScrapper:
         :return: str: The movie section
         """
         try:
+            sections = list()
             #  Looks up the section
-            return node.p.text
+            for section_id in node.get("sections"):
+                sections.append(self.sections.get(section_id).get("name"))
+            return self.SEPARATOR.join(sections)
+
         except (TypeError, KeyError, AttributeError):
             #  If the key does not exists return this default
             return ""
@@ -90,43 +121,41 @@ class MovieScrapper:
             return None
 
     @staticmethod
-    def get_synopsis(soup) -> [str]:
+    def get_synopsis(node) -> [str]:
         """
         Returns the synopsis from the movie page in the BeautifulSoup node
-        :param soup: A soup object containing the movie page
+        :param node: A soup object containing the movie page
         :return: str: The movie synopsis
         """
-        if soup:
-            try:
-                #  Looks up the synopsis
-                return soup.find("div", {"class": "section_sinopsi"}).p.text
-            except (TypeError, KeyError, AttributeError):
-                #  If the key does not exists return this default
-                return None
-        else:
+
+        try:
+            #  Looks up the synopsis
+            return html2text(node.get("synopsis").get("ca"))
+        except (TypeError, KeyError, AttributeError):
+            #  If the key does not exists return this default
             return None
 
-    @staticmethod
-    def get_duration(soup) -> [str]:
+
+    def get_duration(self, node) -> [str]:
         """
         Returns the duration from the movie page in the BeautifulSoup node
-        :param soup: A soup object containing the movie page
+        :param node: A soup object containing the movie page
         :return: str: The movie duration
         """
-        if soup:
-            try:
-                #  Gets al paragraphs in the technical sheet
-                strings = soup.find("div", {"class": "section_fitxa_artistica"}).find_all("p")
-                # The fist paragraph contains duration
-                # The second country and year
-                # Concatenate and return both
-                return "{} / {}".format(strings[1].text, strings[0].text)
 
-            except (TypeError, KeyError, AttributeError, IndexError):
-                #  If the key does not exists return this default
-                return None
-        else:
+        try:
+            #  Gets all countries
+            countries = list()
+            for country_id in node.get("countries"):
+                countries.append(self.countries.get(country_id).get("name"))
+            duration = node.get("duration")
+            year = node.get("year")
+            return f"{duration} mins. {self.SEPARATOR.join(countries)} / {year}"
+
+        except (TypeError, KeyError, AttributeError, IndexError):
+            #  If the key does not exists return this default
             return None
+
 
     def get_movie(self, node) -> Movie:
         """
@@ -134,12 +163,14 @@ class MovieScrapper:
         :param node: A soup object positioned in the movie root
         :return: The Movie object
         """
-        # Get the link for the movie and generate a soup for this movie subpage
-        # This is required because synopsis and duration are obtained from the subpage
-        subpage = self.get_movie_soup(self.get_link(node))
         # Create a Movie object and return it on the fly getting each argument from it's own method
-        return Movie(title=self.get_title(node), director=self.get_director(node), section=self.get_section(node),
-                     synopse=self.get_synopsis(subpage), duration=self.get_duration(subpage))
+        return Movie(
+            title=self.get_title(node),
+            director=self.get_director(node),
+            section=self.get_section(node),
+            synopse=self.get_synopsis(node),
+            duration=self.get_duration(node)
+        )
 
     def is_movie_in_section(self, node, exclusion: str) -> [str]:
         """
@@ -168,7 +199,7 @@ class MovieScrapper:
         :return: A generator of Movie objects
         """
         # Build a list with all movies except banned sections
-        nodes = [node for node in self.slice_soup_by_movies() if not self.is_movie_in_section(node, exclusion)]
+        nodes = [node for node in self.movies if not self.is_movie_in_section(node, exclusion)]
         # Create concurrent threads to run requests while waiting for the next response
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             # Yield avery returned movie
@@ -183,11 +214,13 @@ class MovieScrapper:
         # Create a sha256 hasher object
         hasher = hashlib.sha256()
         # Extract only the div containing the movie list
-        # This has to be done because of dynamic javascript in other parts of the html
         # will return a different hash even if the user readable content has not changed
-        div = self.soup.find("div", {"class": "Gridv2"})
+
         # Extract a valid string for encoding
-        text = div.__str__().encode("utf-8")
+        text = self.movies.__str__().encode("utf-8")
         # pass the string to the hasher and return the hash
         hasher.update(text)
         return hasher.hexdigest()
+
+
+

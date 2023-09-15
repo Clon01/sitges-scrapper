@@ -7,13 +7,16 @@ class CalendarExport:
         self.c = Calendar()
 
     def add_session(self, session):
-        e = Event()
-        e.name = session.name
-        e.begin = session.begin
-        e.duration = session.duration
-        e.location = session.location
-
-        self.c.events.add(e)
+        try:
+            e = Event()
+            e.name = session.name
+            e.begin = session.begin
+            e.duration = session.duration
+            e.location = session.location
+            e.description = session.description
+            self.c.events.add(e)
+        except TypeError:
+            print(f"Error!!! -> {session.name}: {session.duration}")
 
     def save_to_file(self, filename):
         """
