@@ -1,5 +1,5 @@
 from ics import Calendar, Event
-
+import html
 
 class CalendarExport:
 
@@ -9,11 +9,11 @@ class CalendarExport:
     def add_session(self, session):
         try:
             e = Event()
-            e.name = session.name
+            e.name = html.unescape(session.name)
             e.begin = session.begin
             e.duration = session.duration
-            e.location = session.location
-            e.description = session.description
+            e.location = html.unescape(session.location)
+            e.description = html.unescape(session.description)
             self.c.events.add(e)
         except TypeError:
             print(f"Error!!! -> {session.name}: {session.duration}")

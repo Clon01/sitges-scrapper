@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 class CalendarScrapper:
     """Returns sessions from the website"""
 
-    def __init__(self, url: str, params=None):
+    def __init__(self, base_url: str, year: str, params=None):
         """Creates a calendar scrapper object"""
         self.SEPARATOR = ", "
         self.PARAGRAF = "\n \n \n"
@@ -16,7 +16,7 @@ class CalendarScrapper:
         self.locations = dict()
         self.movies = dict()
         # Stores a soup object for the main website
-        self.prepare_data(url, params)
+        self.prepare_data(base_url=base_url, year=year, params=params)
 
     def parse_locations(self, raw_data):
         self.locations = {i["id"]: {"id": i["id"], "name": i["name"]["ca"]} for i in raw_data.get("locations")}
@@ -28,11 +28,19 @@ class CalendarScrapper:
                                  "duration": i["duration"]}
                        for i in raw_data.get("films")}
 
-    def prepare_data(self, url, params):
+    def prepare_data(self, base_url: str, year: str, params):
         raw_data = dict()
-        response = requests.get(url, params)
-        if response.status_code == 200:
-            raw_data = response.json()
+        response_sessions = requests.get(f"{base_url}films/{year}/sessions", params)
+        if response_sessions.status_code == 200:
+            raw_data = response_sessions.json()
+        response_location = requests.get(f"{base_url}location/list", params)
+        if response_location.status_code == 200:
+            raw_data["locations"] = response_location.json().get("locations")
+        response_films = requests.get(f"{base_url}films/{year}", params)
+        if response_films.status_code == 200:
+            raw_data["films"] = response_films.json().get("films")
+
+        if response_sessions.status_code == 200 and response_location.status_code == 200 and response_films.status_code == 200:
             self.sessions = [n for n in raw_data.get("sessions") if "392-location" in n.get("locations")]
             self.parse_locations(raw_data)
             self.parse_movies(raw_data)
@@ -62,6 +70,7 @@ class CalendarScrapper:
             # Looks up the time
             t = node.get("start_date")
             # Convert string to datetime object
+            # Need to subtract 2 hrs to make it GMT or google will get the time wrong
             begin = datetime.strptime(t, "%Y-%m-%dT%H:%M:%S") - timedelta(minutes=120)
             return begin
         except (TypeError, KeyError, AttributeError) as e:

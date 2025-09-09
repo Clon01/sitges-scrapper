@@ -1,6 +1,5 @@
-from data.Settings import Settings
+from Data import Settings, CalendarScrapper
 import csv
-from data.CalendarScrapper import CalendarScrapper
 
 
 def map_session_ro_row(session):

@@ -10,14 +10,14 @@ from html2text import html2text
 class MovieScrapper:
     """Returns movies from the website"""
 
-    def __init__(self, url: str, params=None):
+    def __init__(self, base_url: str, year: str, params=None):
         """Creates a movie scrapper object"""
         self.SEPARATOR = ", "
         self.movies = list()
         self.directors = dict()
         self.sections = dict()
         self.countries = dict()
-        self.prepare_data(url, params)
+        self.prepare_data(base_url, year, params)
 
     def parse_directors(self, raw_data):
         self.directors = {i["id"]: {"id": i["id"], "name": i["name"]["ca"]} for i in raw_data.get("directors")}
@@ -28,15 +28,25 @@ class MovieScrapper:
     def parse_countries(self, raw_data):
         self.countries = {i["id"]: {"id": i["id"], "name": i["name"]["ca"]} for i in raw_data.get("countries")}
 
-    def prepare_data(self, url, params):
+    def prepare_data(self, base_url, year, params):
         raw_data = dict()
-        response = requests.get(url, params)
+        response = requests.get(f"{base_url}films/{year}", params)
         if response.status_code == 200:
             raw_data = response.json()
-            self.movies = raw_data.get("films")
-            self.parse_directors(raw_data)
-            self.parse_sections(raw_data)
-            self.parse_countries(raw_data)
+
+        response = requests.get(f"{base_url}director/list/", params)
+        if response.status_code == 200:
+            raw_data["directors"] = response.json().get("directors",[])
+
+        response = requests.get(f"{base_url}films/categories", params)
+        if response.status_code == 200:
+            raw_data["sections"] = response.json().get("sections", [])
+            raw_data["countries"] = response.json().get("countries", [])
+
+        self.movies = raw_data.get("movies")
+        self.parse_directors(raw_data)
+        self.parse_sections(raw_data)
+        self.parse_countries(raw_data)
 
 
 
@@ -180,7 +190,7 @@ class MovieScrapper:
         :return: A collection of Movie objects
         """
         # Return true if the regular expression on exclusion matches the movie section
-        return re.search(exclusion, self.get_section(node))
+        return re.search(exclusion, self.get_section(node)) or not self.get_section(node)
 
     def slice_soup_by_movies(self):
         """

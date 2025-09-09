@@ -1,4 +1,7 @@
-requests
-bs4
-pandas
-ics
+requests~=2.31.0
+bs4~=0.0.2
+pandas~=2.2.2
+ics~=0.7.2
+html2text~=2024.2.26
+beautifulsoup4~=4.12.3
+reportlab~=4.2.2
