@@ -43,7 +43,7 @@ class MovieScrapper:
             raw_data["sections"] = response.json().get("sections", [])
             raw_data["countries"] = response.json().get("countries", [])
 
-        self.movies = raw_data.get("movies")
+        self.movies = raw_data.get("movies", [])
         self.parse_directors(raw_data)
         self.parse_sections(raw_data)
         self.parse_countries(raw_data)
