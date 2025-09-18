@@ -21,6 +21,6 @@ if __name__ == '__main__':
         # Print movie total
         print("Total movie count: {}".format(me.count))
         # Save new hash in setting.json
-        # my.save_settings()
+        my.save_settings()
     else:
         print("The content didn't change since the last export")
