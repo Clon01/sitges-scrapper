@@ -1,0 +1,33 @@
+from Data import Settings, CalendarScrapper
+import csv
+
+
+def map_session_ro_row(session):
+    date = session.begin.strftime("%d-%m-%Y")
+    time = session.begin.strftime("%H:%M:%S")
+    title = session.name
+    duration = session.duration.total_seconds()/60
+    print([  title])
+    return [  title]
+
+
+def export_csv(events):
+    with open('letterbox.csv', 'w') as output:
+        writer = csv.writer(output)
+        writer.writerow(["Title"])
+        writer.writerows(map(map_session_ro_row, events))
+
+
+if __name__ == '__main__':
+    # Load settings.json file with the app settings
+    my = Settings(__file__)
+    # Create a new CalendarScrapper using the URL from settings
+    scrap = CalendarScrapper(my.settings["URL"], my.settings.get("Year") ,my.settings.get("Params"))
+    # Create a list
+    events = list()
+    # Loop calendar entries into CalendarExport
+    for session in scrap.get_sessions():
+        if session.begin != "Error":
+            events.append(session)
+    # Save export html to the file from settings
+    export_csv(events)
